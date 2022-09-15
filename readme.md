@@ -4,7 +4,7 @@
 
 In the project directory, you can run:
 
-### `npm dev`
+### `npm run dev`
 
 Runs the app in the development mode using nodemon.
 
@@ -14,4 +14,3 @@ Runs the app in the development.
 
 Open [http://localhost:3000](http://localhost:3000) 
 Open [http://localhost:3000/api/notes](http://localhost:3000/api/notes)
- 
