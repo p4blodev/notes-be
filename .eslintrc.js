@@ -4,10 +4,13 @@ module.exports = {
     commonjs: true,
     es2021: true,
   },
-
   extends: ['prettier', 'standard'],
+  overrides: [],
   parserOptions: {
     ecmaVersion: 'latest',
   },
-  rules: {},
+  plugins: ['prettier'],
+  rules: {
+    'comma-dangle': 0,
+  },
 }
