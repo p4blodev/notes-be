@@ -13,7 +13,7 @@ app.use(cors())
 app.use(express.json())
 app.use(logger)
 
-app.get('/', (req, res) => {
+app.get('/', (_req, res) => {
   res.send('<h1>Welcome to api notes.</h1>')
 })
 
@@ -43,18 +43,12 @@ app.delete('/api/notes/:id', (req, res, next) => {
     .catch((error) => next(error))
 })
 
-app.post('/api/notes', (req, res) => {
+app.post('/api/notes', (req, res, next) => {
   const note = req.body
 
   if (!note) {
     return res.status(400).json({
       error: 'request body is invalid',
-    })
-  }
-
-  if (!note.content) {
-    return res.status(400).json({
-      error: 'note content is required',
     })
   }
 
@@ -68,7 +62,7 @@ app.post('/api/notes', (req, res) => {
     .save()
     .then((savedNoted) => res.status(201).json(savedNoted))
     .catch((error) => {
-      console.log('🚀 ~ file: index.js ~ line 75 ~ app.post ~ error', error)
+      next(error)
     })
 })
 
