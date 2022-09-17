@@ -58,16 +58,10 @@ app.post('/api/notes', (req, res) => {
     })
   }
 
-  if (!note.important) {
-    return res.status(400).json({
-      error: 'note important is required',
-    })
-  }
-
   const newNote = new Note({
     content: note.content,
     date: new Date().toISOString(),
-    important: note.important,
+    important: note.important || false,
   })
 
   newNote
