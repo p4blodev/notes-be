@@ -1,8 +1,10 @@
 const notesRouter = require('express').Router()
 const Note = require('../models/note')
+const User = require('../models/user')
 
-notesRouter.get('/', (req, res) => {
+notesRouter.get('/', (_req, res) => {
   Note.find({})
+    .populate('user', { username: 1, name: 1 })
     .then((notes) => res.json(notes))
     .catch(() => res.status(500).json({ error: 'something went wrong' }))
 })
@@ -27,27 +29,29 @@ notesRouter.delete('/:id', (req, res, next) => {
     .catch((error) => next(error))
 })
 
-notesRouter.post('/', (req, res, next) => {
+notesRouter.post('/', async (req, res, next) => {
   const note = req.body
 
-  if (!note) {
-    return res.status(400).json({
-      error: 'request body is invalid',
+  const { content, important, userId } = note
+
+  let user
+  try {
+    user = await User.findById(userId)
+
+    const newNote = new Note({
+      content,
+      date: new Date().toISOString(),
+      important: important || false,
+      user: user.id,
     })
+
+    const savedNote = await newNote.save()
+    user.notes = user.notes.concat(savedNote._id)
+    await user.save()
+    res.status(201).json(savedNote)
+  } catch (error) {
+    next(error)
   }
-
-  const newNote = new Note({
-    content: note.content,
-    date: new Date().toISOString(),
-    important: note.important || false,
-  })
-
-  newNote
-    .save()
-    .then((savedNoted) => res.status(201).json(savedNoted))
-    .catch((error) => {
-      next(error)
-    })
 })
 
 notesRouter.put('/:id', (req, res, next) => {
