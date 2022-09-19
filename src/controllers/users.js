@@ -3,8 +3,15 @@ const userRouter = require('express').Router()
 const User = require('../models/user')
 
 userRouter.post('/', async (req, res, next) => {
-  const { username, name, password } = req.body
-  console.log('🚀 ~ file: users.js ~ line 7 ~ userRouter.post ~ body', req.body)
+  const user = req.body
+
+  const { username, name, password } = user
+
+  if (!(username || name || password)) {
+    return res.status(400).json({
+      error: 'bad request',
+    })
+  }
 
   const saltRound = 10
   const passwordHash = await bcrypt.hash(password, saltRound)
