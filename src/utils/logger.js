@@ -1,9 +1,9 @@
 const info = (...params) => {
-  console.info(...params)
+  console.info('ℹ️', ...params)
 }
 
 const error = (...params) => {
-  console.error(...params)
+  console.error('🛑', ...params)
 }
 
 module.exports = {

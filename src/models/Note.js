@@ -1,9 +1,9 @@
-const { model, Schema } = require('mongoose')
+const { model, Schema, default: mongoose } = require('mongoose')
 
 const noteSchema = new Schema({
   content: {
     type: String,
-    minLength: 2,
+    minLength: 5,
     required: true,
   },
   date: {
@@ -11,10 +11,14 @@ const noteSchema = new Schema({
     required: true,
   },
   important: Boolean,
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'User',
+  },
 })
 
 noteSchema.set('toJSON', {
-  transform: (document, returnedDocument) => {
+  transform: (_document, returnedDocument) => {
     returnedDocument.id = returnedDocument._id
     delete returnedDocument._id
     delete returnedDocument.__v
