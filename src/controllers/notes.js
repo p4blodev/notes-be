@@ -1,6 +1,9 @@
 const notesRouter = require('express').Router()
 const Note = require('../models/note')
 const User = require('../models/user')
+const middleware = require('../utils/middleware')
+
+const { authHandler } = middleware
 
 notesRouter.get('/', (_req, res) => {
   Note.find({})
@@ -29,7 +32,7 @@ notesRouter.delete('/:id', (req, res, next) => {
     .catch((error) => next(error))
 })
 
-notesRouter.post('/', async (req, res, next) => {
+notesRouter.post('/', authHandler, async (req, res, next) => {
   const note = req.body
 
   const { content, important, userId } = note
