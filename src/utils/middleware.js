@@ -53,6 +53,7 @@ const authHandler = (req, res, next) => {
   if (!decodeToken.id) {
     next({ name: 'unauthorized' })
   }
+  next()
 }
 
 module.exports = {

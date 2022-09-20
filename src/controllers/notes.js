@@ -5,14 +5,16 @@ const middleware = require('../utils/middleware')
 
 const { authHandler } = middleware
 
-notesRouter.get('/', (_req, res) => {
+notesRouter.get('/', authHandler, (_req, res) => {
   Note.find({})
     .populate('user', { username: 1, name: 1 })
-    .then((notes) => res.json(notes))
+    .then((notes) => {
+      return res.json(notes)
+    })
     .catch(() => res.status(500).json({ error: 'something went wrong' }))
 })
 
-notesRouter.get('/:id', (req, res, next) => {
+notesRouter.get('/:id', authHandler, (req, res, next) => {
   const id = req.params.id
 
   Note.findById(id)
@@ -22,7 +24,7 @@ notesRouter.get('/:id', (req, res, next) => {
     .catch((error) => next(error))
 })
 
-notesRouter.delete('/:id', (req, res, next) => {
+notesRouter.delete('/:id', authHandler, (req, res, next) => {
   const id = req.params.id
 
   Note.findByIdAndDelete(id)
@@ -57,7 +59,7 @@ notesRouter.post('/', authHandler, async (req, res, next) => {
   }
 })
 
-notesRouter.put('/:id', (req, res, next) => {
+notesRouter.put('/:id', authHandler, (req, res, next) => {
   const id = req.params.id
   const note = req.body
 
