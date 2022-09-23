@@ -5,6 +5,7 @@ module.exports = {
     jest: true,
   },
   extends: ['prettier', 'standard'],
+  ignorePatterns: ['dist'],
   overrides: [],
   parserOptions: {
     ecmaVersion: 'latest',
@@ -12,5 +13,6 @@ module.exports = {
   plugins: ['prettier'],
   rules: {
     'comma-dangle': 0,
+    semi: 0,
   },
-}
+};
