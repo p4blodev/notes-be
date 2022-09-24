@@ -5,31 +5,13 @@ import { authHandler } from '../utils/middleware';
 
 const notesRouter = express.Router();
 
-notesRouter.get('/', (_req, res) => {
-  const notes = [
-    {
-      name: 'a name',
-      age: 21,
-    },
-    {
-      name: 'b name',
-      age: 12,
-    },
-    {
-      name: 'c name',
-      age: 43,
-    },
-  ];
-  return res.json(notes);
-  /*
+notesRouter.get('/', authHandler, (_req, res) => {
   Note.find({})
     .populate('user', { username: 1, name: 1 })
     .then((notes: NoteType[]) => {
       return res.json(notes);
     })
     .catch(() => res.status(500).json({ error: 'something went wrong' }));
-
-    */
 });
 
 notesRouter.get('/:id', authHandler, (req, res, next) => {
@@ -52,7 +34,7 @@ notesRouter.delete('/:id', authHandler, (req, res, next) => {
     .catch((error) => next(error));
 });
 
-notesRouter.post('/', async (req, res, next) => {
+notesRouter.post('/', authHandler, async (req, res, next) => {
   const note = req.body;
 
   const { content, important, userId } = note;

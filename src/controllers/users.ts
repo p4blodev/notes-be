@@ -1,10 +1,11 @@
 import bcrypt from 'bcrypt';
 import express from 'express';
 import User, { UserType } from '../models/user';
+import { authHandler } from '../utils/middleware';
 
 const usersRouter = express.Router();
 
-usersRouter.get('/', (_req, res, next) => {
+usersRouter.get('/', authHandler, (_req, res, next) => {
   User.find({})
     .populate('notes', { content: 1, date: 1 })
     .then((users: UserType[]) => res.json(users))
@@ -23,12 +24,12 @@ usersRouter.post('/', async (req, res, next) => {
   }
 
   const saltRound = 10;
-  const passwordHash = await bcrypt.hash(password, saltRound);
+  const passwordHashed = await bcrypt.hash(password, saltRound);
 
   const newUser = new User({
     username,
     name,
-    password: passwordHash,
+    password: passwordHashed,
   });
 
   await newUser

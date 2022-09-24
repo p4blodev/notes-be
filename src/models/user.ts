@@ -26,7 +26,7 @@ const userSchema = new Schema({
 });
 
 userSchema.set('toJSON', {
-  transform: (document, returnedDocument) => {
+  transform: (_document, returnedDocument) => {
     returnedDocument.id = returnedDocument._id.toString();
     delete returnedDocument._id;
     delete returnedDocument.__v;

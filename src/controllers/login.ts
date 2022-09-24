@@ -10,7 +10,6 @@ loginRouter.post('/', async (req, res) => {
   const { username, password } = req.body;
 
   const user = await User.findOne({ username });
-  console.log('🚀 ~ file: login.js ~ line 10 ~ loginRouter.post ~ user', user);
 
   const passwordCorrect =
     user === null ? false : await bcrypt.compare(password, user.password);
@@ -27,10 +26,6 @@ loginRouter.post('/', async (req, res) => {
   };
 
   const token = jwt.sign(userForToken, envConfig.SECRET!);
-  console.log(
-    '🚀 ~ file: login.ts ~ line 30 ~ loginRouter.post ~ token',
-    token,
-  );
 
   res.status(200).send({ token, username: user.username, name: user.name });
 });
