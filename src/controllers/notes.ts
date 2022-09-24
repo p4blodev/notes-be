@@ -5,7 +5,7 @@ import { authHandler } from '../utils/middleware';
 
 const notesRouter = express.Router();
 
-notesRouter.get('/', authHandler, (_req, res) => {
+notesRouter.get('/', (_req, res) => {
   Note.find({})
     .populate('user', { username: 1, name: 1 })
     .then((notes: NoteType[]) => {
@@ -34,29 +34,35 @@ notesRouter.delete('/:id', authHandler, (req, res, next) => {
     .catch((error) => next(error));
 });
 
-notesRouter.post('/', authHandler, async (req, res, next) => {
+notesRouter.post('/', async (req, res, next) => {
   const note = req.body;
 
   const { content, important, userId } = note;
+  console.log('🚀 ~ file: notes.ts ~ line 41 ~ notesRouter.post ~ note', note);
 
   let user;
   try {
     user = await User.findById(userId);
-    if (user) {
-      const newNote = new Note({
-        content,
-        date: new Date().toISOString(),
-        important: important || false,
-        user: user?.id,
-      });
+    console.log(
+      '🚀 ~ file: notes.ts ~ line 46 ~ notesRouter.post ~ user',
+      user,
+    );
 
-      const savedNote = await newNote.save();
+    if (!user) return res.status(404).end();
 
-      if (savedNote) {
-        user.notes = user.notes.concat(savedNote.id);
-        await user.save();
-        res.status(201).json(savedNote);
-      }
+    const newNote = new Note({
+      content,
+      date: new Date().toISOString(),
+      important: important || false,
+      user: user.id,
+    });
+
+    const savedNote = await newNote.save();
+
+    if (savedNote) {
+      user.notes = user.notes.concat(savedNote.id);
+      await user.save();
+      res.status(201).json(savedNote);
     }
   } catch (error) {
     next(error);
